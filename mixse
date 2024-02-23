@@ -1,0 +1,40 @@
+const { Builder, By, Key, until } = require('selenium-webdriver');
+const chrome = require('selenium-webdriver/chrome');
+
+// Путь к установленному драйверу для Chrome
+const chromeDriverPath = '/путь/к/chromedriver';
+
+// Опции для настройки браузера
+const chromeOptions = new chrome.Options();
+chromeOptions.addArguments('--headless'); // Запуск браузера в фоновом режиме
+
+// Создаем экземпляр браузера
+const driver = new Builder()
+    .forBrowser('chrome')
+    .setChromeOptions(chromeOptions)
+    .build();
+
+// Пример скрипта для открытия Google, выполнения поиска и вывода заголовка страницы
+async function runScript() {
+    try {
+        // Открываем Google
+        await driver.get('https://www.google.com');
+
+        // Находим поле ввода поискового запроса и вводим запрос
+        const searchBox = await driver.findElement(By.name('q'));
+        await searchBox.sendKeys('Selenium WebDriver', Key.RETURN);
+
+        // Ожидаем загрузку результатов поиска
+        await driver.wait(until.titleContains('Selenium WebDriver'), 5000);
+
+        // Выводим заголовок страницы
+        const pageTitle = await driver.getTitle();
+        console.log('Page Title:', pageTitle);
+    } finally {
+        // Закрываем браузер после выполнения скрипта
+        await driver.quit();
+    }
+}
+
+// Запускаем скрипт
+runScript();
